@@ -10,23 +10,33 @@ export class NoteService {
     private noteRepository: Repository<Note>,
   ) {}
 
-  // Create Notes
-  async createNote(title: string, content: string): Promise<Note> {
-    const note = this.noteRepository.create({ title, content });
-    await this.noteRepository.save(note);
-    return note;
+  async createNote(
+    title: string,
+    content: string,
+    tags?: string[],
+  ): Promise<Note> {
+    const note = this.noteRepository.create({
+      title,
+      content,
+      tags,
+    });
+    return await this.noteRepository.save(note);
   }
 
-  // Get Note by ID and updates it
-  async updateNote(id: number, title: string, content: string): Promise<Note> {
+  async updateNote(
+    id: number,
+    title: string,
+    content: string,
+    tags?: string[],
+  ): Promise<Note> {
     const note = await this.noteRepository.findOne({ where: { id } });
     if (!note) {
-      throw new NotFoundException(`Note with ID ${id} not found`);
+      throw new Error(`Note with id ${id} not found`);
     }
     note.title = title;
     note.content = content;
-    await this.noteRepository.save(note);
-    return note;
+    note.tags = tags;
+    return await this.noteRepository.save(note);
   }
 
   // Get Note by ID and deletes it
