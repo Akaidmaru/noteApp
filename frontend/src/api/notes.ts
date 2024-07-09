@@ -1,11 +1,10 @@
-const API_URL = "http://localhost:3000"; 
+const API_URL = "http://localhost:3000";
 
 export interface Note {
     id: number;
     title: string;
     content: string;
     archived: boolean;
-    tags: string[];
 }
 
 export const fetchNotes = async (): Promise<Note[]> => {

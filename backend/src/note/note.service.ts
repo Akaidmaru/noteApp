@@ -1,24 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Note } from './note.entity';
 
 @Injectable()
 export class NoteService {
   constructor(
     @InjectRepository(Note)
-    private noteRepository: Repository<Note>,
+    private readonly noteRepository: Repository<Note>,
   ) {}
 
   async createNote(
     title: string,
     content: string,
-    tags?: string[],
+    archived: boolean,
   ): Promise<Note> {
     const note = this.noteRepository.create({
       title,
       content,
-      tags,
+      archived,
     });
     return await this.noteRepository.save(note);
   }
@@ -27,7 +27,7 @@ export class NoteService {
     id: number,
     title: string,
     content: string,
-    tags?: string[],
+    archived: boolean,
   ): Promise<Note> {
     const note = await this.noteRepository.findOne({ where: { id } });
     if (!note) {
@@ -35,11 +35,10 @@ export class NoteService {
     }
     note.title = title;
     note.content = content;
-    note.tags = tags;
+    note.archived = archived;
     return await this.noteRepository.save(note);
   }
 
-  // Get Note by ID and deletes it
   async deleteNote(id: number): Promise<void> {
     const result = await this.noteRepository.delete({ id });
     if (result.affected === 0) {
@@ -47,9 +46,12 @@ export class NoteService {
     }
   }
 
-  // Get all notes
-  async getNotes(archived: boolean): Promise<Note[]> {
-    return this.noteRepository.find({ where: { archived } });
+  async getNotes(archived?: boolean): Promise<Note[]> {
+    if (archived !== undefined) {
+      return this.noteRepository.find({ where: { archived } });
+    } else {
+      return this.noteRepository.find();
+    }
   }
 
   async archiveNote(id: number, archived: boolean): Promise<Note> {
@@ -61,7 +63,9 @@ export class NoteService {
     await this.noteRepository.save(note);
     return note;
   }
+}
 
+/* 
   async addTag(id: number, tag: string): Promise<Note> {
     const note = await this.noteRepository.findOne({ where: { id } });
     if (!note) {
@@ -89,3 +93,4 @@ export class NoteService {
     return this.noteRepository.find({ where: { tags: Like(`%${tag}%`) } });
   }
 }
+ */

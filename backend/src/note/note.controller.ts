@@ -19,8 +19,9 @@ export class NoteController {
   createNote(
     @Body('title') title: string,
     @Body('content') content: string,
+    @Body('archived') archived: boolean,
   ): Promise<Note> {
-    return this.noteService.createNote(title, content);
+    return this.noteService.createNote(title, content, archived);
   }
 
   @Put('/:id')
@@ -28,8 +29,9 @@ export class NoteController {
     @Param('id') id: number,
     @Body('title') title: string,
     @Body('content') content: string,
+    @Body('archived') archived: boolean,
   ): Promise<Note> {
-    return this.noteService.updateNote(id, title, content);
+    return this.noteService.updateNote(id, title, content, archived);
   }
 
   @Delete('/:id')
@@ -38,7 +40,7 @@ export class NoteController {
   }
 
   @Get()
-  getNotes(@Query('archived') archived: boolean): Promise<Note[]> {
+  getNotes(@Query('archived') archived?: boolean): Promise<Note[]> {
     return this.noteService.getNotes(archived);
   }
 
@@ -48,20 +50,5 @@ export class NoteController {
     @Query('archived') archived: boolean,
   ): Promise<Note> {
     return this.noteService.archiveNote(id, archived);
-  }
-
-  @Put('/:id/tags')
-  addTag(@Param('id') id: number, @Query('tag') tag: string): Promise<Note> {
-    return this.noteService.addTag(id, tag);
-  }
-
-  @Delete('/:id/tags')
-  removeTag(@Param('id') id: number, @Query('tag') tag: string): Promise<Note> {
-    return this.noteService.removeTag(id, tag);
-  }
-
-  @Get('/tags/:tag')
-  getNotesByTag(@Param('tag') tag: string): Promise<Note[]> {
-    return this.noteService.getNotesByTag(tag);
   }
 }

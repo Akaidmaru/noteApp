@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { tagsTransformer } from '../transformers/tags.transformer';
 
-@Entity('notes') // Check this, it's not working
+@Entity('notes')
 export class Note {
   @PrimaryGeneratedColumn()
   id: number;
@@ -14,7 +13,4 @@ export class Note {
 
   @Column({ default: false })
   archived: boolean;
-
-  @Column({ type: 'text', transformer: tagsTransformer, default: '' })
-  tags: string[];
 }

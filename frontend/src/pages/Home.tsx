@@ -7,7 +7,7 @@ interface Note {
     id: number;
     title: string;
     content: string;
-    tags: string[];
+    archived: boolean;
 }
 
 const Home: React.FC = () => {
@@ -35,7 +35,7 @@ const Home: React.FC = () => {
                     <li key={note.id}>
                         <h3>{note.title}</h3>
                         <p>{note.content}</p>
-                        <p>Tags: {note.tags.join(", ")}</p>
+                        <p>{note.archived}</p>
                     </li>
                 ))}
             </ul>
